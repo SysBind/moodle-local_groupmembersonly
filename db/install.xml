@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/tab/db" VERSION="20121212" COMMENT="XMLDB file for Moodle local/gilboametalink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+  <TABLES>
+    <TABLE NAME="gmo_availability" COMMENT="Trace last recorded availability field">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course module id in course_modules"/>
+	<FIELD NAME="availability" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Availability restrictions for viewing this activity, in JSON format. Null if no restrictions."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+	<KEY NAME="cmid" TYPE="unique" FIELDS="cmid"/>
+	<KEY NAME="cmidfk" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id" ONDELETE="cascade"/>
+     </KEYS>
+    </TABLE>
+
+
+    <TABLE NAME="gmo_role_override" COMMENT="Track gmo generated role overrides">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="gmo_avail" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Reference to gmo_availability"/>
+	<FIELD NAME="role_cap" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Reference to role_capabilities"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+	<KEY NAME="avail_rolecap" TYPE="unique" FIELDS="gmo_avail,role_cap"/>
+	<KEY NAME="avail_fk" TYPE="foreign" FIELDS="gmo_avail" REFTABLE="gmo_availability" REFFIELDS="id" ONDELETE="cascade"/>
+	<KEY NAME="rolecap_fk" TYPE="foreign" FIELDS="role_cap" REFTABLE="role_capabilities" REFFIELDS="id" ONDELETE="cascade"/>
+      </KEYS>
+    </TABLE>  
+  </TABLES>
+</XMLDB>
